@@ -20,25 +20,26 @@
 %     author : Cho HyunGwang
 %
 
-% Note for character set customize
-% downloading.. |██████████████████████████████                   | 80%
-% downloading.. |██████████████████████████████-------------------| 80%
-% downloading.. |██████████████████████████████•••••••••••••••••••| 80%
-% downloading.. |==============================•••••••••••••••••••| 80%
-% 1234567890123456789012345678901234567890123456789012345678901234567890
+% Note for custom character set
+% downloading.. |██████████████████████████████               | 80%
+% downloading.. |██████████████████████████████---------------| 80%
+% downloading.. |██████████████████████████████•••••••••••••••| 80%
+% downloading.. |==============================•••••••••••••••| 80%
+% 0        1         2         3         4         5         6         7
+% 123456789012345678901234567890123456789012345678901234567890123456789012345
 
 classdef ProgressBar < handle
     properties
         process_name
     end
-    properties (SetAccess = private)
+    properties (SetAccess = private, Hidden = true)
         bar_max
         bar = 0;
         int_percent = 0;
     end
     properties (SetAccess = immutable, Hidden = true)
         terminal_width
-        char_set = '█ |';
+        char_set = '█ |'; % <---------------------------- Character set
     end
     
     methods
