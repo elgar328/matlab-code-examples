@@ -38,7 +38,7 @@ classdef ProgressBar < handle
     end
     properties (SetAccess = immutable, Hidden = true)
         terminal_width
-        char_set = '█•|';
+        char_set = '█ |';
     end
     
     methods
