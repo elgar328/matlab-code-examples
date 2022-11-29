@@ -3,5 +3,3 @@
 **Terminal progress bar**
 
 <img src="https://user-images.githubusercontent.com/93251045/204430751-197f5593-cbd0-4550-b8d1-6ad7cdc4020a.png"> 
-<img src="https://user-images.githubusercontent.com/93251045/204194564-f048d363-71c3-4332-be18-6df06026efc5.gif"> 
-
