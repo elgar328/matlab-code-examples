@@ -55,6 +55,7 @@ classdef ProgressBar < handle
                 'Process name is too long!')
             obj.process_name = process_name;
             obj.bar_max = obj.terminal_width - 7 - length(process_name);
+            fprintf(repmat(' ',[1,obj.terminal_width]))
         end
         
         function update(obj,ratio)
