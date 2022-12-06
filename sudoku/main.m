@@ -14,7 +14,11 @@ T = [0 0 7 5 0 0 2 0 0;
      0 3 0 0 0 0 0 1 0;
      0 0 0 2 0 0 0 0 0];
 
+fprintf('Sudoku with 17 numbers\n')
+disp_sudoku(T)
+
 sol = sudoku_solver(T,2);
+fprintf('\nSolution\n')
 disp_sudoku(sol)
 
 %% Solve 1465 hardest sudokus
