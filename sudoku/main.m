@@ -1,3 +1,23 @@
+%% sudoku solver
+
+clear; clc;
+cd(fileparts(matlab.desktop.editor.getActiveFilename));
+
+% Sudoku with 17 numbers
+T = [0 0 7 5 0 0 2 0 0;
+     0 4 1 0 0 0 0 0 0;
+     0 0 0 0 0 0 0 0 0;
+     5 0 0 0 0 1 0 0 0;
+     3 0 0 0 0 0 8 0 0;
+     0 0 0 4 7 0 0 0 0;
+     0 0 0 6 8 0 0 0 3;
+     0 3 0 0 0 0 0 1 0;
+     0 0 0 2 0 0 0 0 0];
+
+sol = sudoku_solver(T,2);
+disp_sudoku(sol)
+
+%% Solve 1465 hardest sudokus
 
 clear; clc;
 cd(fileparts(matlab.desktop.editor.getActiveFilename));
@@ -31,4 +51,18 @@ end
 fclose(f_quiz);
 fclose(f_sol);
 
+toc
+
+%% sudoku generator
+
+clear; clc;
+cd(fileparts(matlab.desktop.editor.getActiveFilename));
+
+clue_num = 26;
+
+tic
+T = sudoku_generator(clue_num);
+
+fprintf('clues  : %d\nblanks : %d\n',clue_num,81-clue_num)
+disp_sudoku(T)
 toc

@@ -24,13 +24,15 @@
 %     author : Cho HyunGwang
 %
 
-function sol = sudoku_solver(T)
+function sol = sudoku_solver(T, max_sol_num)
 arguments
     T (9,9) double {mustBeInteger,mustBeInRange(T,0,9)}
+    max_sol_num (1,1) double {mustBeInteger,mustBePositive} = 100
 end
 assert(validate_table(T),'Invalid sudoku board!')
 
 sudoku = exactCoverMatrix(T);
+sudoku.max_sol_num = max_sol_num;
 
 sol = algorithmX(sudoku);
 
@@ -136,6 +138,9 @@ for n = 1:length(row_candidates)
     sol_branch = algorithmX(sudoku_branch);
     if ~isempty(sol_branch)
         sol = cat(3,sol, sol_branch);
+    end
+    if size(sol,3) >= sudoku.max_sol_num
+        break
     end
 end
 end
