@@ -1,8 +1,12 @@
 % Nyan cat on MATLAB
 %
 % Run this script.
+% This single script file contains images and sounds.
 % You can stop Nyan by closing the figure.
 % Enjoy nyan cat to your heart's content.
+%
+% Author : Cho Hyungwang
+% Modified : 2023-03-26
 %
 % Repository
 % https://github.com/elgar328/matlab-code-examples/tree/main/nyancat
