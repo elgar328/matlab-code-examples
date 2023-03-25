@@ -50,7 +50,7 @@ tic();
 h_axis.AlphaData = 0;
 while isvalid(h_figure)
     if toc >= f_scheduled
-        h_axis.AlphaData = min(h_axis.AlphaData + 1/50, 1);
+        h_axis.AlphaData = min(h_axis.AlphaData + 1/54, 1);
         update_frame(h_axis, h_textbox, frames);
         f_scheduled = f_scheduled + FRAME_INTERVAL;
         
