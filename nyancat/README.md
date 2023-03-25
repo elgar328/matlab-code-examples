@@ -1,6 +1,7 @@
 # Nyan cat on MATLAB
 
 - Run this script.
+- This single script file contains images and sounds.
 - You can stop Nyan by closing the figure.
 - Enjoy nyan cat to your heart's content.
 
