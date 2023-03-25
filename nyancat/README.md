@@ -8,4 +8,4 @@
 
 
 
-- [Thanks to keizikang](https://github.com/keizikang)
+- Thanks to [keizi the lazy](https://github.com/keizikang)
