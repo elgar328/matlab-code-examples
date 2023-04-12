@@ -27,6 +27,10 @@
 
 ### ProgressBar
 
-- Text based progress bar for MATLAB
+- ProgressBar_cli
+- ProgressBar_cli_parfor
+- ProgressBar_gui
+- ProgressBar_gui_parfor
 
-<img width="650" src="https://user-images.githubusercontent.com/93251045/204430751-197f5593-cbd0-4550-b8d1-6ad7cdc4020a.png"> 
+<img width="600" src="https://user-images.githubusercontent.com/93251045/231528391-7111c5a1-8428-46fc-afd1-59d06332cf1c.gif"/>
+<img width="400" src="https://user-images.githubusercontent.com/93251045/231540007-0d9c8318-3417-4115-964e-749f8c018c5f.png"> 
