@@ -19,7 +19,7 @@
 ### ProgressBar_gui
 
 - GUI progress bar with time information
-- Figure closes automatically when the task is complete
+- Figure automatically closes when the task is complete
 - Files : ProgressBar_gui.m, demo_gui.m
 
 <img width="400" src="https://user-images.githubusercontent.com/93251045/231540007-0d9c8318-3417-4115-964e-749f8c018c5f.png"> 
@@ -27,7 +27,7 @@
 ### ProgressBar_gui_parfor
 
 - GUI progress bar for parallel pools
-- Figure closes automatically when the task is complete
+- Figure automatically closes when the task is complete
 - It uses parallel.pool.DataQueue (Clean, Fast, Safe)
 - No file I/O, no java class, no undocumented matlab for parallel progress tracking
 - Files : ProgressBar_gui_parfor.m, demo_gui_parfor.m
