@@ -26,8 +26,7 @@
 %     Task name | 37 sec ███████████████████████████████          TERMINATED| 50%
 %
 %
-%     created 2023. 04. 08.
-%     updated 2023. 04. 12.
+%     created 2023. 04. 13.
 %     author  Cho HyunGwang
 
 % Note for custom character set
