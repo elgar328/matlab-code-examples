@@ -1,6 +1,6 @@
 # matlab-code-examples
 
-### Nyan cat on MATLAB
+### [Nyan cat on MATLAB](https://github.com/elgar328/matlab-code-examples/tree/main/nyancat)
 
 - Run this script.
 - This single script file contains images and sounds.
@@ -9,7 +9,7 @@
 
 <img width="650" alt="nyancat_on_matlab" src="https://user-images.githubusercontent.com/93251045/227739427-098ddb81-5fb6-498e-aa72-063b7ba9093a.png">
 
-### sudoku
+### [Sudoku](https://github.com/elgar328/matlab-code-examples/tree/main/sudoku)
 
 - Sudoku solver
 
@@ -25,7 +25,7 @@
 
 <img width="400" src="https://user-images.githubusercontent.com/93251045/205837053-81bcb0fe-8cd7-403b-b083-863e99ad9591.png">
 
-### ProgressBar
+### [ProgressBar](https://github.com/elgar328/matlab-code-examples/tree/main/tools/ProgressBar)
 
 - ProgressBar_cli
 - ProgressBar_cli_parfor
