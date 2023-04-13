@@ -10,7 +10,8 @@
 ### ProgressBar_cli_parfor
 
 - Text based progress bar for parallel pools
-- It uses parallel.pool.DataQueue (not file I/O)
+- It uses parallel.pool.DataQueue (Clean, Fast, Safe)
+- No file I/O, no java class, no undocumented matlab for parallel progress tracking
 - Files : ProgressBar_cli_parfor.m, demo_cli_parfor.m
 
 <img width="650" src="https://user-images.githubusercontent.com/93251045/231537667-c7383a8b-f3a7-4b1d-afb8-b8b17fed943f.png"> 
@@ -26,8 +27,9 @@
 ### ProgressBar_gui_parfor
 
 - GUI progress bar for parallel pools
-- It uses parallel.pool.DataQueue (not file I/O)
 - Figure closes automatically when the task is complete
+- It uses parallel.pool.DataQueue (Clean, Fast, Safe)
+- No file I/O, no java class, no undocumented matlab for parallel progress tracking
 - Files : ProgressBar_gui_parfor.m, demo_gui_parfor.m
 
 <img width="400" src="https://user-images.githubusercontent.com/93251045/231540007-0d9c8318-3417-4115-964e-749f8c018c5f.png"> 
