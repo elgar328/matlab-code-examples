@@ -35,6 +35,8 @@
 %     created 2022. 11. 27.
 %     updated 2023. 04. 13.
 %     author : Cho HyunGwang
+% 
+%     https://github.com/elgar328/matlab-code-examples/tree/main/tools/ProgressBar
 
 % Note for custom character set
 %   char_set{1}↓↓char_set{4}    ↓char_set{2}    ↓char_set{3}  ↓char_set{4}
