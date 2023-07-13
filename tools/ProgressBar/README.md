@@ -1,5 +1,17 @@
 # ProgressBar
 
+Handy progress bar that can be used in GUI or text interface.
+
+- GUI interface
+- CLI interface
+- parfor compatibility
+
+
+
+
+
+
+
 ### ProgressBar_cli
 
 - Text based progress bar

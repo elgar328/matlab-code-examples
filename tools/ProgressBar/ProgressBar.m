@@ -1,0 +1,362 @@
+% ProgressBar
+%
+%     GUI progress bar
+%     |   N = 100;
+%     |   task_name = 'Task name';
+%     |
+%     |   PB = ProgressBar(N, task_name);        % or ProgressBar(N);
+%     |   for n = 1:N
+%     |       pause(0.5)          % Loop body
+%     |       PB.count            % or count(PB)
+%     |   end
+% 
+%     GUI progress bar (parfor loop)
+%     |   N = 500;
+%     |   task_name = 'Task name';
+%     |
+%     |   PB = ProgressBar(N, task_name);        % or ProgressBar(N);
+%     |   parfor n = 1:N
+%     |       pause(0.5*rand)     % Loop body
+%     |       count(PB)           % It is recommended to use count(PB)
+%     |                           % instead of PB.count in parfor loop.
+%     |   end
+%
+%     CLI progress bar
+%     |   N = 100;
+%     |   task_name = 'Task name';
+%     |
+%     |   PB = ProgressBar(N, task_name, 'cli');
+%     |   % or ProgressBar(N, [], 'cli');
+%     |   for n = 1:N
+%     |       pause(0.5)          % Loop body
+%     |       PB.count            % or count(PB)
+%     |   end
+% 
+%     CLI progress bar (parfor loop)
+%     |   N = 500;
+%     |   task_name = 'Task name';
+%     |
+%     |   PB = ProgressBar(N, task_name, 'cli');
+%     |   % or ProgressBar(N, [], 'cli');
+%     |   parfor n = 1:N
+%     |       pause(0.5*rand)     % Loop body
+%     |       count(PB)           % It is recommended to use count(PB)
+%     |                           % instead of PB.count in parfor loop.
+%     |   end
+%
+%     CLI progress bar
+%     |███████████████████████████ 1 min, 18 sec ███████████████████████████|100%
+%     Task name |██████████████████████████ 8 sec ██████████████████████████|100%
+%     Task name |███████████████████████████████████████████████            | 80%
+%     Elapsed: 2 hour, 1 min, Remaining: 30 min
+%
+%
+%     created 2023. 07. 13.
+%     author  Cho HyunGwang
+% 
+%     https://github.com/elgar328/matlab-code-examples/tree/main/tools/ProgressBar
+
+% Note for character set
+%   char_set{1}↓↓char_set{4}    ↓char_set{2}    ↓char_set{3}  ↓char_set{4}
+% downloading.. |██████████████████████████████               | 80%
+% downloading.. |██████████████████████████████---------------| 80%
+% downloading.. |██████████████████████████████•••••••••••••••| 80%
+% downloading.. |==============================•••••••••••••••| 80%
+% downloading.. |==============================               | 80%
+% downloading.. |******************************               | 80%
+% downloading.. |##############################...............| 80%
+% 0        1         2         3         4         5         6         7
+% 123456789012345678901234567890123456789012345678901234567890123456789012345
+
+classdef ProgressBar < handle
+    % -------------------- Properties for asynchronous --------------------
+    properties (SetAccess = immutable, GetAccess = private)
+        Queue
+    end
+    properties (Access = private, Transient)
+        counter = 0
+    end
+    properties (SetAccess = immutable, GetAccess = private, Transient)
+        Listener = []
+    end
+    % ---------------------------- Properties -----------------------------
+    properties (SetAccess = private, Transient)
+        task_name
+        start_time = []
+        end_time
+    end
+    properties (SetAccess = immutable, GetAccess = private, Transient)
+        N
+        ui_type
+    end
+    properties (Access = private, Transient)
+        time_info = "";
+        ratio = 0;
+        int_percent = 0;
+    end
+    % ------------------------ Properties for GUI -------------------------
+    properties (SetAccess = immutable, Hidden = true, Transient)
+        fig_handle
+        ratio_resol = 0.001;
+    end
+    % ------------------------ Properties for CLI -------------------------
+    properties (Access = private, Transient)
+        bar_n = 0;
+    end
+    properties (SetAccess = immutable, GetAccess = private, Transient)
+        bar_N
+        terminal_width = 75
+        minimal_terminal_width = 20;
+        char_set = {' ','█',' ','|'}; % <----- Character set
+    end
+
+    methods
+        % -------------------------- Constructor --------------------------
+        function obj = ProgressBar(N, task_name, ui)
+            arguments
+                N         (1,1) double {mustBePositive,mustBeFinite, ...
+                                mustBeReal,mustBeInteger}
+                task_name (1,:) char {mustBeText} = ''
+                ui        (1,3) char {mustBeMember(ui,{'gui','cli'})} = 'gui'
+            end
+
+            obj.N = N;
+            obj.Queue = parallel.pool.DataQueue;
+            obj.Listener = afterEach(obj.Queue, @(~) localIncrement(obj));
+            obj.ui_type = ui;
+
+            switch obj.ui_type
+                case 'cli'
+                    obj.task_name = check_task_name_cli(obj, task_name);
+                    bar_N = obj.terminal_width -4 -2*length(obj.char_set{4});
+                    if ~isempty(obj.task_name)
+                        bar_N = bar_N -length(obj.char_set{1}) ...
+                            -length(obj.task_name);
+                    end
+                    obj.bar_N = bar_N;
+                case 'gui'
+                    obj.task_name = task_name;
+                    obj.fig_handle = waitbar(0, '', 'Name', ...
+                        sprintf('%d%%  %s',obj.int_percent, obj.task_name));
+                    obj.bar_N = 0;
+            end
+        end
+        % ---------------------------- Counter ----------------------------
+        function count(obj)
+            send(obj.Queue, true);
+        end
+    end
+    
+    methods (Hidden = true)
+        % -------------------------- Destructor ---------------------------
+        function delete(obj)
+            delete(obj.Queue);
+            if strcmp(obj.ui_type,'gui')
+                delete(obj.fig_handle);
+            end
+        end
+    end
+
+    methods (Access = private)
+        % ------------------------- localIncrement ------------------------
+        function localIncrement(obj)
+            if isempty(obj.start_time)       % at first count
+                obj.start_time = datetime();
+                if strcmp(obj.ui_type,'cli')
+                    update_cli("", true, true);
+                end
+            end
+            
+            obj.counter = 1 + obj.counter;
+
+            switch obj.ui_type
+                case 'cli'
+                    % ------------------------ CLI ------------------------
+                    obj.ratio = obj.counter/obj.N;
+
+                    outdated = false;
+                    if obj.int_percent ~= floor(obj.ratio*100)
+                        obj.int_percent = floor(obj.ratio*100);
+                        outdated = true;
+                        if obj.int_percent == 100
+                            obj.end_time = datetime();
+                        end
+                    end
+                    new_time_info = get_time_info_string(obj);
+                    if ~strcmp(obj.time_info, new_time_info)
+                        obj.time_info = new_time_info;
+                        outdated = true;
+                    end
+
+                    if obj.bar_n ~= floor(obj.bar_N*obj.ratio)
+                        obj.bar_n = floor(obj.bar_N*obj.ratio);
+                        outdated = true;
+                    end
+                    if outdated
+                        print_progressbar_cli(obj);
+                    end
+                case 'gui'
+                    % ------------------------ GUI ------------------------
+                    ratio_new = obj.counter/obj.N;
+
+                    if obj.int_percent ~= floor(ratio_new*100)
+                        obj.int_percent = floor(ratio_new*100);
+                        obj.fig_handle.Name = ...
+                            sprintf('%d%%  %s',obj.int_percent, obj.task_name);
+                    end
+                    if obj.ratio + obj.ratio_resol <= ratio_new
+                        obj.ratio = ratio_new;
+                        waitbar(obj.ratio, obj.fig_handle)
+                    end
+                    new_time_info = get_time_info_string(obj);
+                    if ~strcmp(obj.time_info, new_time_info)
+                        obj.time_info = new_time_info;
+                        waitbar(obj.ratio, obj.fig_handle, obj.time_info)
+                    end
+                    if obj.counter == obj.N
+                        obj.end_time = datetime();
+                        if ~isempty(obj.task_name)
+                            fprintf('%s\n', obj.task_name)
+                        end
+                        fprintf('%s\n', obj.time_info)
+                        obj.delete
+                    end
+            end
+        end
+    end
+end
+
+% ---------------------------- Local functions ----------------------------
+function string_out = duration2string(dur)
+if isinf(dur)
+    string_out = "Inf";
+    return
+end
+if dur >= days(1)
+    string_out = sprintf('%d day, %d hour', ...
+        floor(dur/days(1)), floor(hours(mod(dur,days(1)))));
+elseif dur >= hours(1)
+    string_out = sprintf('%d hour, %d min', ...
+        floor(dur/hours(1)), floor(minutes(mod(dur,hours(1)))));
+elseif dur >= minutes(1)
+    string_out = sprintf('%d min, %d sec', ...
+        floor(dur/minutes(1)), floor(seconds(mod(dur,minutes(1)))));
+else
+    string_out = sprintf('%d sec', floor(dur/seconds(1)));
+end
+string_out = string(string_out);
+end
+
+function time_info = get_time_info_string(obj)
+if obj.int_percent == 100
+    time_info = "Elapsed: " ...
+        + duration2string(datetime() - obj.start_time);
+else
+    elapsed = datetime() - obj.start_time;
+    remain = elapsed/obj.ratio - elapsed;
+    time_info = "Elapsed: " + duration2string(elapsed) ...
+        + ", Remaining: " + duration2string(remain);
+end
+end
+
+function print_progressbar_cli(obj)
+
+if isempty(obj.task_name)
+    name_string = "";
+else
+    name_string = string([obj.task_name, obj.char_set{1}]);
+end
+bar_bound_string = string(obj.char_set{4});
+percent_string = string(sprintf('%3d%%', obj.int_percent));
+% Bar text
+bar_string = [repmat(obj.char_set{2},[1,obj.bar_n]), ...
+    repmat(obj.char_set{3},[1,obj.bar_N-obj.bar_n])];
+if obj.int_percent == 100
+    % finished
+    end_flag = true;
+    time_info_char = [' ', ...
+        convertStringsToChars(...
+        extractAfter(obj.time_info,"Elapsed: ")), ' '];
+    time_info_len = length(time_info_char);
+    if time_info_len + 2 <= length(bar_string)
+        head_ind = floor((length(bar_string)-time_info_len)/2)+1;
+        tail_ind = head_ind + time_info_len -1;
+        bar_string(head_ind:tail_ind) = time_info_char;
+        second_line = "";
+    else
+        second_line = obj.time_info + newline;
+    end
+else
+    % on progress
+    end_flag = false;
+    second_line = obj.time_info + newline;
+end
+bar_string = string(bar_string);
+
+first_line = ...
+    name_string ...
+    + bar_bound_string ...
+    + bar_string ...
+    + bar_bound_string ...
+    + percent_string ...
+    + newline;
+
+formatted_string = first_line + second_line;
+
+% print out
+update_cli(formatted_string, end_flag);
+end
+
+function update_cli(string_vec, lock_this_msg, lock_prev_msg)
+% string_vec(1) -> std out    (black)
+% string_vec(2) -> std error  (red)
+% string_vec(3) -> std out    (black)
+% string_vec(4) -> std error  (red)
+% ...
+% Not escaping at \, ', % 
+
+arguments
+    string_vec    (1,:) string {mustBeText}
+    lock_this_msg (1,1) logical = false
+    lock_prev_msg (1,1) logical = false
+end
+
+persistent previous_msg_length
+if isempty(previous_msg_length)
+    previous_msg_length = 0;
+end
+if lock_prev_msg
+    previous_msg_length = 0;
+end
+
+backspace_chain = string(repmat(sprintf('\b'),[1,previous_msg_length]));
+previous_msg_length = sum(strlength(string_vec));
+
+string_vec(1) = backspace_chain + string_vec(1);
+
+fileid = 1;
+for n=1:length(string_vec)
+    msg = string_vec(n);
+    msg = strrep(msg, '%', '%%');
+    msg = strrep(msg, '\', '\\');
+    msg = strrep(msg, "'", "''");
+    fprintf(fileid, msg);
+    switch fileid
+        case 1
+            fileid = 2;
+        case 2
+            fileid = 1;
+    end
+end
+
+if lock_this_msg
+    previous_msg_length = 0;
+end
+end
+
+function task_name = check_task_name_cli(obj, task_name)
+if length(task_name) >= (obj.terminal_width - obj.minimal_terminal_width)
+    task_name = task_name(1:obj.terminal_width-obj.minimal_terminal_width-1);
+    warning('The task name has been truncated due to its length!')
+end
+end
