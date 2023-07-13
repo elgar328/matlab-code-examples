@@ -3,46 +3,30 @@
 Handy progress bar that can be used in GUI or text interface.
 
 - GUI interface
+  - Figure automatically closes when the task is complete
 - CLI interface
-- parfor compatibility
+- Parfor compatibility
+  - It uses parallel.pool.DataQueue
+  - No file I/O, no java class, no undocumented matlab for parallel progress tracking
 
 
+### Simple usage
+
+<img width="500" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/76f292bb-3bec-430f-be27-f10f2ac29c7c">  
+<br> <br>
+<img width="400" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/b1e0e70c-40df-44e6-8c2f-963eca586dd7">  
 
 
+### Task name, Parfor
+
+<img width="500" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/b39d2d97-cefb-46da-9a5c-e790bf676bbc">  
+<br> <br>
+<img width="400" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/a1293838-36b5-4375-a69a-42e4bfe94018">  
 
 
+### Text based progress bar
 
-### ProgressBar_cli
-
-- Text based progress bar
-- Files : [ProgressBar_cli.m](https://github.com/elgar328/matlab-code-examples/blob/main/tools/ProgressBar/ProgressBar_cli.m), [demo_cli.m](https://github.com/elgar328/matlab-code-examples/blob/main/tools/ProgressBar/demo_cli.m)
-
-<img width="650" src="https://user-images.githubusercontent.com/93251045/231528391-7111c5a1-8428-46fc-afd1-59d06332cf1c.gif">
-
-### ProgressBar_cli_parfor
-
-- Text based progress bar for parallel pools
-- It uses parallel.pool.DataQueue (Clean, Fast, Safe)
-- No file I/O, no java class, no undocumented matlab for parallel progress tracking
-- Files : [ProgressBar_cli_parfor.m](https://github.com/elgar328/matlab-code-examples/blob/main/tools/ProgressBar/ProgressBar_cli_parfor.m), [demo_cli_parfor.m](https://github.com/elgar328/matlab-code-examples/blob/main/tools/ProgressBar/demo_cli_parfor.m)
-
-<img width="650" src="https://user-images.githubusercontent.com/93251045/231537667-c7383a8b-f3a7-4b1d-afb8-b8b17fed943f.png"> 
-
-### ProgressBar_gui
-
-- GUI progress bar with time information
-- Figure automatically closes when the task is complete
-- Files : [ProgressBar_gui.m](https://github.com/elgar328/matlab-code-examples/blob/main/tools/ProgressBar/ProgressBar_gui.m), [demo_gui.m](https://github.com/elgar328/matlab-code-examples/blob/main/tools/ProgressBar/demo_gui.m)
-
-<img width="400" src="https://user-images.githubusercontent.com/93251045/231540007-0d9c8318-3417-4115-964e-749f8c018c5f.png"> 
-
-### ProgressBar_gui_parfor
-
-- GUI progress bar for parallel pools
-- Figure automatically closes when the task is complete
-- It uses parallel.pool.DataQueue (Clean, Fast, Safe)
-- No file I/O, no java class, no undocumented matlab for parallel progress tracking
-- Files : [ProgressBar_gui_parfor.m](https://github.com/elgar328/matlab-code-examples/blob/main/tools/ProgressBar/ProgressBar_gui_parfor.m), [demo_gui_parfor.m](https://github.com/elgar328/matlab-code-examples/blob/main/tools/ProgressBar/demo_gui_parfor.m)
-
-<img width="400" src="https://user-images.githubusercontent.com/93251045/231540007-0d9c8318-3417-4115-964e-749f8c018c5f.png"> 
+<img width="500" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/2217b426-1907-411b-8b11-af512c20b25b">  
+<br> <br>
+<img width="600" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/08df69d2-f074-47da-b4cb-7eca3f37a7de">  
 
