@@ -1,4 +1,9 @@
 % ProgressBar
+%     
+%     Handy progress bar that can be used in GUI or text interface.
+%     - GUI interface
+%     - CLI interface
+%     - Parfor compatibility
 %
 %     GUI progress bar
 %     |   N = 100;
@@ -51,7 +56,7 @@
 %     Elapsed: 2 hour, 1 min, Remaining: 30 min
 %
 %
-%     created 2023. 07. 13.
+%     created 2023. 07. 14.
 %     author  Cho HyunGwang
 % 
 %     https://github.com/elgar328/matlab-code-examples/tree/main/tools/ProgressBar
@@ -73,21 +78,20 @@ classdef ProgressBar < handle
     properties (SetAccess = immutable, GetAccess = private)
         Queue
     end
-    properties (Access = private, Transient)
-        counter = 0
-    end
     properties (SetAccess = immutable, GetAccess = private, Transient)
         Listener = []
     end
     % ---------------------------- Properties -----------------------------
     properties (SetAccess = private, Transient)
         task_name
+        counter = 0
         start_time = []
         end_time
     end
     properties (SetAccess = immutable, GetAccess = private, Transient)
-        N
-        ui_type
+        N                                % final integer
+        ui_type                          % 'gui' or 'cli'
+        frame_interval_limit = 0.1       % sec
     end
     properties (Access = private, Transient)
         time_info = "";
@@ -95,6 +99,9 @@ classdef ProgressBar < handle
         int_percent = 0;
     end
     % ------------------------ Properties for GUI -------------------------
+    properties (Access = private, Transient)
+        bar_ratio = 0;
+    end
     properties (SetAccess = immutable, Hidden = true, Transient)
         fig_handle
         ratio_resol = 0.001;
@@ -160,20 +167,28 @@ classdef ProgressBar < handle
     methods (Access = private)
         % ------------------------- localIncrement ------------------------
         function localIncrement(obj)
-            if isempty(obj.start_time)       % at first count
+            persistent prev_count_time
+
+            if isempty(obj.start_time) % at first count
                 obj.start_time = datetime();
+                prev_count_time = datetime();
                 if strcmp(obj.ui_type,'cli')
                     update_cli("", true, true);
                 end
             end
             
             obj.counter = 1 + obj.counter;
+            obj.ratio = obj.counter/obj.N;
+
+            if (seconds(datetime()-prev_count_time) < obj.frame_interval_limit) ...
+                    && (obj.counter ~= obj.N)
+                return
+            end
+            prev_count_time = datetime();
 
             switch obj.ui_type
                 case 'cli'
                     % ------------------------ CLI ------------------------
-                    obj.ratio = obj.counter/obj.N;
-
                     outdated = false;
                     if obj.int_percent ~= floor(obj.ratio*100)
                         obj.int_percent = floor(obj.ratio*100);
@@ -187,7 +202,6 @@ classdef ProgressBar < handle
                         obj.time_info = new_time_info;
                         outdated = true;
                     end
-
                     if obj.bar_n ~= floor(obj.bar_N*obj.ratio)
                         obj.bar_n = floor(obj.bar_N*obj.ratio);
                         outdated = true;
@@ -197,16 +211,14 @@ classdef ProgressBar < handle
                     end
                 case 'gui'
                     % ------------------------ GUI ------------------------
-                    ratio_new = obj.counter/obj.N;
-
-                    if obj.int_percent ~= floor(ratio_new*100)
-                        obj.int_percent = floor(ratio_new*100);
+                    if obj.int_percent ~= floor(obj.ratio*100)
+                        obj.int_percent = floor(obj.ratio*100);
                         obj.fig_handle.Name = ...
                             sprintf('%d%%  %s',obj.int_percent, obj.task_name);
                     end
-                    if obj.ratio + obj.ratio_resol <= ratio_new
-                        obj.ratio = ratio_new;
-                        waitbar(obj.ratio, obj.fig_handle)
+                    if obj.bar_ratio + obj.ratio_resol <= obj.ratio
+                        obj.bar_ratio = obj.ratio;
+                        waitbar(obj.bar_ratio, obj.fig_handle)
                     end
                     new_time_info = get_time_info_string(obj);
                     if ~strcmp(obj.time_info, new_time_info)

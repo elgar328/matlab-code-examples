@@ -27,7 +27,7 @@ N = 600;
 task_name = 'Parfor loop';
 
 PB = ProgressBar(N,task_name);
-for ii = 1:N
+parfor ii = 1:N
     pause(0.5*rand)  % Loop body
 
     count(PB)        % It is recommended to use count(PB)
@@ -36,7 +36,7 @@ end
 
 %% cli progress bar
 
-N = 300;
+N = 100;
 task_name = 'For loop';
 
 PB = ProgressBar(N,task_name,'cli');
