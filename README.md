@@ -27,10 +27,15 @@
 
 ### [ProgressBar](https://github.com/elgar328/matlab-code-examples/tree/main/tools/ProgressBar)
 
-- ProgressBar_cli
-- ProgressBar_cli_parfor
-- ProgressBar_gui
-- ProgressBar_gui_parfor
+Handy progress bar that can be used in GUI or text interface.
 
-<img width="600" src="https://user-images.githubusercontent.com/93251045/231528391-7111c5a1-8428-46fc-afd1-59d06332cf1c.gif"/>
-<img width="400" src="https://user-images.githubusercontent.com/93251045/231540007-0d9c8318-3417-4115-964e-749f8c018c5f.png"> 
+- GUI interface
+  - Figure automatically closes when the task is complete
+- CLI interface
+- Parfor compatibility
+  - It uses parallel.pool.DataQueue
+  - No file I/O, no java class, no undocumented matlab for parallel progress tracking
+<br> <br>
+<img width="400" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/a1293838-36b5-4375-a69a-42e4bfe94018">
+<br> <br>
+<img width="600" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/08df69d2-f074-47da-b4cb-7eca3f37a7de"> 
