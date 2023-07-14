@@ -2,6 +2,7 @@
 
 Handy progress bar that can be used in GUI or text interface.
 
+- Faster than waitbar (MATLAB builtin)
 - GUI interface
   - Figure automatically closes when the task is complete
 - CLI interface
@@ -30,3 +31,27 @@ Handy progress bar that can be used in GUI or text interface.
 <br> <br>
 <img width="600" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/08df69d2-f074-47da-b4cb-7eca3f37a7de">  
 
+
+### Faster than waitbar (MATLAB builtin)
+
+```matlab
+N = 500000;
+
+f = waitbar(0,'waitbar');             % waitbar (MATLAB builtin)
+for n = 1:N, waitbar(n/N,f); end
+close(f)
+
+PB = ProgressBar(N);                  % ProgressBar gui
+for n = 1:N, PB.count; end
+
+PB = ProgressBar(N,[],'cli');         % ProgressBar cli
+for n = 1:N, PB.count; end
+```
+
+| |Elapsed time|
+|------|------|
+|waitbar (MATLAB builtin)|122.94 sec|
+|ProgressBar gui|32.37 sec|
+|ProgressBar cli|28.50 sec|
+
+@ 2021 MacBook Pro 14" (M1 Pro)
