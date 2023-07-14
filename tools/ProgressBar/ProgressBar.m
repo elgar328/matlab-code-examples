@@ -150,7 +150,11 @@ classdef ProgressBar < handle
         end
         % ---------------------------- Counter ----------------------------
         function count(obj)
-            send(obj.Queue, true);
+            if isempty(getCurrentJob)    % Serial processing
+                obj.localIncrement();      % faster
+            else                         % Parallel processing
+                send(obj.Queue, true);
+            end
         end
     end
     
