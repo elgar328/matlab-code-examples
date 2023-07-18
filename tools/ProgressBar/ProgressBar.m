@@ -1,10 +1,13 @@
 % ProgressBar
 %     
 %     Handy progress bar that can be used in GUI or text interface.
+%     - Faster than waitbar (MATLAB builtin)
 %     - GUI interface
 %     - CLI interface
 %     - Parfor compatibility
 %
+%     -=#( Monospaced fonts are recommended for the CLI interface )#=-
+% 
 %     GUI progress bar
 %     |   N = 100;
 %     |   task_name = 'Task name';
@@ -57,6 +60,7 @@
 %
 %
 %     created 2023. 07. 14.
+%     edited  2023. 07. 19.
 %     author  Cho HyunGwang
 % 
 %     https://github.com/elgar328/matlab-code-examples/tree/main/tools/ProgressBar
@@ -104,7 +108,7 @@ classdef ProgressBar < handle
     end
     properties (SetAccess = immutable, Hidden = true, Transient)
         fig_handle
-        ratio_resol = 0.001;
+        ratio_resol = 0.01;
     end
     % ------------------------ Properties for CLI -------------------------
     properties (Access = private, Transient)
