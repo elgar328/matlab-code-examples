@@ -6,6 +6,7 @@ Handy progress bar that can be used in GUI or text interface.
 - GUI interface
   - Figure automatically closes when the task is complete
 - CLI interface
+  - Monospaced fonts are recommended for the CLI interface
 - Parfor compatibility
   - It uses parallel.pool.DataQueue
   - No file I/O, no java class, no undocumented matlab for parallel progress tracking
@@ -50,8 +51,8 @@ for n = 1:N, PB.count; end
 
 | |Elapsed time|
 |------|------|
-|waitbar (MATLAB builtin)|122.94 sec|
-|ProgressBar gui|32.37 sec|
-|ProgressBar cli|28.50 sec|
+|waitbar (MATLAB builtin)|129.17 sec|
+|ProgressBar gui|20.26 sec|
+|ProgressBar cli|18.30 sec|
 
 @ 2021 MacBook Pro 14" (M1 Pro)
