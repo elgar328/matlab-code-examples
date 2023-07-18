@@ -29,6 +29,7 @@
 
 Handy progress bar that can be used in GUI or text interface.
 
+- Faster than waitbar (MATLAB builtin)
 - GUI interface
   - Figure automatically closes when the task is complete
 - CLI interface
