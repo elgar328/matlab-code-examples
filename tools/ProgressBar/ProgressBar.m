@@ -84,6 +84,7 @@ classdef ProgressBar < handle
     end
     properties (SetAccess = immutable, GetAccess = private, Transient)
         Listener = []
+        no_parallel_toolbox
     end
     % ---------------------------- Properties -----------------------------
     properties (SetAccess = private, Transient)
@@ -134,6 +135,7 @@ classdef ProgressBar < handle
             obj.N = N;
             obj.Queue = parallel.pool.DataQueue;
             obj.Listener = afterEach(obj.Queue, @(~) localIncrement(obj));
+            obj.no_parallel_toolbox = ~license('test','parallel computing toolbox');
             obj.ui_type = ui;
 
             switch obj.ui_type
@@ -154,10 +156,10 @@ classdef ProgressBar < handle
         end
         % ---------------------------- Counter ----------------------------
         function count(obj)
-            if isempty(getCurrentJob)    % Serial processing
-                obj.localIncrement();      % faster
-            else                         % Parallel processing
-                send(obj.Queue, true);
+            if obj.no_parallel_toolbox || isempty(getCurrentJob)
+                obj.localIncrement();   % Serial processing
+            else
+                send(obj.Queue, true);  % Parallel processing
             end
         end
     end
