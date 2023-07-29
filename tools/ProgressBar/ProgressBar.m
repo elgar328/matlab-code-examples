@@ -60,7 +60,7 @@
 %
 %
 %     created 2023. 07. 14.
-%     edited  2023. 07. 19.
+%     edited  2023. 07. 30.
 %     author  Cho HyunGwang
 % 
 %     https://github.com/elgar328/matlab-code-examples/tree/main/tools/ProgressBar
@@ -106,6 +106,7 @@ classdef ProgressBar < handle
     % ------------------------ Properties for GUI -------------------------
     properties (Access = private, Transient)
         bar_ratio = 0;
+        prev_count_time
     end
     properties (SetAccess = immutable, Hidden = true, Transient)
         fig_handle
@@ -158,7 +159,11 @@ classdef ProgressBar < handle
         end
         % ---------------------------- Counter ----------------------------
         function count(obj)
-            if obj.no_parallel_toolbox || isempty(getCurrentJob)
+            % The || operator was not used intentionally.
+            % Short circuit does not work normally under certain conditions.
+            if obj.no_parallel_toolbox
+                obj.localIncrement();   % Serial processing
+            elseif isempty(getCurrentJob)
                 obj.localIncrement();   % Serial processing
             else
                 send(obj.Queue, true);  % Parallel processing
@@ -179,11 +184,9 @@ classdef ProgressBar < handle
     methods (Access = private)
         % ------------------------- localIncrement ------------------------
         function localIncrement(obj)
-            persistent prev_count_time
-
             if isempty(obj.start_time) % at first count
                 obj.start_time = datetime();
-                prev_count_time = datetime();
+                obj.prev_count_time = datetime();
                 if strcmp(obj.ui_type,'cli')
                     update_cli("", true, true);
                 end
@@ -192,11 +195,11 @@ classdef ProgressBar < handle
             obj.counter = 1 + obj.counter;
             obj.ratio = obj.counter/obj.N;
 
-            if (seconds(datetime()-prev_count_time) < obj.frame_interval_limit) ...
+            if (seconds(datetime()-obj.prev_count_time) < obj.frame_interval_limit) ...
                     && (obj.counter ~= obj.N)
                 return
             end
-            prev_count_time = datetime();
+            obj.prev_count_time = datetime();
 
             switch obj.ui_type
                 case 'cli'
