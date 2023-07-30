@@ -138,7 +138,7 @@ classdef ProgressBar < handle
             obj.Listener = afterEach(obj.Queue, @(~) localIncrement(obj));
             addon_list = matlab.addons.installedAddons;
             obj.no_parallel_toolbox = ~any(contains(addon_list.Name, ...
-                "parallel computing toolbox",IgnoreCase=true));
+                "parallel computing toolbox",'IgnoreCase',true));
             obj.ui_type = ui;
 
             switch obj.ui_type
