@@ -1,4 +1,7 @@
-% ProgressBar
+% ProgressBar (for MATLAB 2017a ~ 2020a)
+% 
+%     LEGACY-COMPATIBLE version of ProgressBar
+%     Compatibility: MATLAB 2017a ~ latest
 %     
 %     Handy progress bar that can be used in GUI or text interface.
 %     - Faster than waitbar (MATLAB builtin)
@@ -59,8 +62,6 @@
 %     Elapsed: 2 hour, 1 min, Remaining: 30 min
 %
 %
-%     compatibility: MATLAB 2020b ~ latest
-% 
 %     created 2023. 07. 14.
 %     edited  2023. 08. 01.
 %     author  Cho HyunGwang
@@ -128,15 +129,17 @@ classdef ProgressBar < handle
     methods
         % -------------------------- Constructor --------------------------
         function obj = ProgressBar(N, task_name, ui)
-            arguments
-                N         (1,1) double {mustBePositive,mustBeFinite, ...
-                                mustBeReal,mustBeInteger}
-                task_name (1,:) char {mustBeText} = ''
-                ui        (1,3) char {mustBeMember(ui,{'gui','cli'})} = 'gui'
-            end
+
+            if nargin<3, ui = 'gui'; end
+            if nargin<2, task_name = ''; end
+            validateattributes(N,{'double'},...
+                {'scalar','integer','positive','real','finite','nonnan'})
+            task_name = must_be_text(task_name);
+            mustBeMember(ui,{'gui','cli'})
 
             obj.N = N;
-            obj.no_parallel_toolbox = ~contains([ver().Name], ...
+            addon_list = ver;
+            obj.no_parallel_toolbox = ~contains([addon_list.Name], ...
                 'parallel computing toolbox','IgnoreCase',true);
             if ~obj.no_parallel_toolbox
                 obj.Queue = parallel.pool.DataQueue;
@@ -177,7 +180,6 @@ classdef ProgressBar < handle
     methods (Hidden = true)
         % -------------------------- Destructor ---------------------------
         function delete(obj)
-            delete(obj.Queue);
             if strcmp(obj.ui_type,'gui')
                 delete(obj.fig_handle);
             end
@@ -305,7 +307,7 @@ if obj.int_percent == 100
     % finished
     end_flag = true;
     time_info_char = [' ', ...
-        convertStringsToChars(...
+        string2chars(...
         extractAfter(obj.time_info,"Elapsed: ")), ' '];
     time_info_len = length(time_info_char);
     if time_info_len + 2 <= length(bar_string)
@@ -345,11 +347,11 @@ function update_cli(string_vec, lock_this_msg, lock_prev_msg)
 % ...
 % Not escaping at \, ', % 
 
-arguments
-    string_vec    (1,:) string
-    lock_this_msg (1,1) logical = false
-    lock_prev_msg (1,1) logical = false
-end
+if nargin < 3, lock_prev_msg = false; end
+if nargin < 2, lock_this_msg = false; end
+assert(isstring(string_vec))
+validateattributes(lock_this_msg,{'logical'},{'scalar'})
+validateattributes(lock_prev_msg,{'logical'},{'scalar'})
 
 persistent previous_msg_length
 if isempty(previous_msg_length)
@@ -389,4 +391,22 @@ if length(task_name) >= (obj.terminal_width - obj.minimal_terminal_width)
     task_name = task_name(1:obj.terminal_width-obj.minimal_terminal_width-1);
     warning('The task name has been truncated due to its length!')
 end
+end
+
+function output = must_be_text(input)
+if isempty(input)
+    output = input;
+elseif ischar(input)
+    assert(size(input,1)==1)
+    output = input;
+elseif isstring(input)
+    assert(isscalar(input))
+    output = string2chars(input);
+else
+    error('task_name must be a text')
+end
+end
+
+function output = string2chars(input)
+output = char(cellstr(input));
 end
