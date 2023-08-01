@@ -33,9 +33,13 @@ Handy progress bar that can be used in GUI or text interface.
 - GUI interface
   - Figure automatically closes when the task is complete
 - CLI interface
+  - Monospaced fonts are recommended for the CLI interface
 - Parfor compatibility
   - It uses parallel.pool.DataQueue
   - No file I/O, no java class, no undocumented matlab for parallel progress tracking
+- Support for legacy MATLAB releases
+  - Standard version: MATLAB 2020b ~ latest
+  - Legacy-compatible version: MATLAB 2017a ~ latest 
 <br> <br>
 <img width="400" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/a1293838-36b5-4375-a69a-42e4bfe94018">
 <br> <br>
