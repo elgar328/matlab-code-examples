@@ -10,6 +10,9 @@ Handy progress bar that can be used in GUI or text interface.
 - Parfor compatibility
   - It uses parallel.pool.DataQueue
   - No file I/O, no java class, no undocumented matlab for parallel progress tracking
+- Support for legacy MATLAB releases
+  - Standard version: MATLAB 2020b ~ latest
+  - Legacy-compatible version: MATLAB 2017a ~ latest
 
 
 ### Simple usage
