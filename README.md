@@ -7,9 +7,14 @@
 - You can stop Nyan by closing the figure.
 - Enjoy nyan cat to your heart's content.
 
+[Recorded video](https://youtu.be/wINua1u4yMs=0s)
+
 <img width="650" alt="nyancat_on_matlab" src="https://user-images.githubusercontent.com/93251045/227739427-098ddb81-5fb6-498e-aa72-063b7ba9093a.png">
 
 ### [Sudoku](https://github.com/elgar328/matlab-code-examples/tree/main/sudoku)
+
+Sudoku puzzles are treated as an [Exact Cover Problem](https://en.wikipedia.org/wiki/Exact_cover),
+and [Knuth's Algorithm X](https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X) is used to solve it.
 
 - Sudoku solver
 
