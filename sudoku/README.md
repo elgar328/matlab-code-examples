@@ -1,4 +1,7 @@
-# main.m
+Sudoku puzzles are treated as an [Exact Cover Problem](https://en.wikipedia.org/wiki/Exact_cover),
+and [Knuth's Algorithm X](https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X) is used to solve it.
+
+## main.m
 
 ### %% sudoku solver
 
