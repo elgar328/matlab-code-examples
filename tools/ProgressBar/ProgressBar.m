@@ -62,7 +62,7 @@
 %     compatibility: MATLAB 2020b ~ latest
 % 
 %     created 2023. 07. 14.
-%     edited  2023. 08. 01.
+%     edited  2023. 09. 28.
 %     author  Cho HyunGwang
 % 
 %     https://github.com/elgar328/matlab-code-examples/tree/main/tools/ProgressBar
@@ -143,6 +143,8 @@ classdef ProgressBar < handle
                 obj.Listener = afterEach(obj.Queue, @(~) localIncrement(obj));
             end
             obj.ui_type = ui;
+            obj.start_time = datetime();
+            obj.prev_count_time = datetime();
 
             switch obj.ui_type
                 case 'cli'
@@ -153,6 +155,7 @@ classdef ProgressBar < handle
                             -length(obj.task_name);
                     end
                     obj.bar_N = bar_N;
+                    update_cli("", true, true);
                 case 'gui'
                     obj.task_name = task_name;
                     obj.fig_handle = waitbar(0, '', 'Name', ...
@@ -187,14 +190,6 @@ classdef ProgressBar < handle
     methods (Access = private)
         % ------------------------- localIncrement ------------------------
         function localIncrement(obj)
-            if isempty(obj.start_time) % at first count
-                obj.start_time = datetime();
-                obj.prev_count_time = datetime();
-                if strcmp(obj.ui_type,'cli')
-                    update_cli("", true, true);
-                end
-            end
-            
             obj.counter = 1 + obj.counter;
             obj.ratio = obj.counter/obj.N;
 
