@@ -44,12 +44,9 @@ remainder = str2double(bcd2char(num)) ...
     * 10^(-precision_digits);                            %  / 10^20
 remainder = mod(remainder, 2*pi);
 result = cos(remainder);
-fprintf('\n%d! => %c.%se+%d\n', ...
-    NUM, num_factorial(1), ...
-    num_factorial(2:45), ...
-    length(num_factorial)-1)
-fprintf('%d! %% 2π => %.14f\n', NUM, remainder)
-fprintf('cos(%d!) => %.14f\n\n', NUM, result)
+
+fprintf('\n%d! %% 2π => %.14f\n', NUM, remainder)
+fprintf('\ncos(%d!) => %.14f\n\n', NUM, result)
 toc
 
 %% ============================== functions ===============================
