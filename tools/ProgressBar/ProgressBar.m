@@ -139,10 +139,6 @@ classdef ProgressBar < handle
     methods
         % -------------------------- Constructor --------------------------
         function obj = ProgressBar(N, varargin)
-
-
-            
-
             p = inputParser;
             addRequired(p, 'N', ...
                 @(x) validateattributes(x,{'double'},{'scalar', ...
