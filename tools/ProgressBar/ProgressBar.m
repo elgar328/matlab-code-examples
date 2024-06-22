@@ -8,21 +8,33 @@
 %
 %     -=#( Monospaced fonts are recommended for the CLI interface )#=-
 % 
+%     Syntax
+%     PB = ProgressBar(N)
+%     PB = ProgressBar(N, options...)
+%     
+%     Options
+%     taskname: 'task name'
+%     ui:       'gui' (default) | 'cli'
+%     no_log:   false (default) | true
+%     
+%     Methods
+%     PB.count
+%     
 %     GUI progress bar
-%     |   N = 100;
-%     |   task_name = 'Task name';
 %     |
-%     |   PB = ProgressBar(N, task_name);        % or ProgressBar(N);
+%     |   N = 100;
+%     |   PB = ProgressBar(N, taskname='Task 01');
+%     |
 %     |   for n = 1:N
 %     |       pause(0.5)          % Loop body
-%     |       PB.count            % or count(PB)
+%     |       PB.count
 %     |   end
 % 
 %     GUI progress bar (parfor loop)
-%     |   N = 500;
-%     |   task_name = 'Task name';
 %     |
-%     |   PB = ProgressBar(N, task_name);        % or ProgressBar(N);
+%     |   N = 500;
+%     |   PB = ProgressBar(N, no_log=true);
+%     |
 %     |   parfor n = 1:N
 %     |       pause(0.5*rand)     % Loop body
 %     |       count(PB)           % It is recommended to use count(PB)
@@ -30,22 +42,20 @@
 %     |   end
 %
 %     CLI progress bar
-%     |   N = 100;
-%     |   task_name = 'Task name';
 %     |
-%     |   PB = ProgressBar(N, task_name, 'cli');
-%     |   % or ProgressBar(N, [], 'cli');
+%     |   N = 100;
+%     |   PB = ProgressBar(N, taskname='Task 02', ui='cli');
+%     |
 %     |   for n = 1:N
 %     |       pause(0.5)          % Loop body
-%     |       PB.count            % or count(PB)
+%     |       PB.count
 %     |   end
 % 
 %     CLI progress bar (parfor loop)
-%     |   N = 500;
-%     |   task_name = 'Task name';
 %     |
-%     |   PB = ProgressBar(N, task_name, 'cli');
-%     |   % or ProgressBar(N, [], 'cli');
+%     |   N = 500;
+%     |   PB = ProgressBar(N, taskname='Task 03', ui='cli', no_log=true);
+%     |
 %     |   parfor n = 1:N
 %     |       pause(0.5*rand)     % Loop body
 %     |       count(PB)           % It is recommended to use count(PB)
@@ -62,7 +72,7 @@
 %     compatibility: MATLAB 2020b ~ latest
 % 
 %     created 2023. 07. 14.
-%     edited  2023. 09. 28.
+%     edited  2024. 06. 22.
 %     author  Cho HyunGwang
 % 
 %     https://github.com/elgar328/matlab-code-examples/tree/main/tools/ProgressBar
@@ -98,6 +108,7 @@ classdef ProgressBar < handle
     properties (SetAccess = immutable, GetAccess = private, Transient)
         N                                % final integer
         ui_type                          % 'gui' or 'cli'
+        no_log                           % true or false
         frame_interval_limit = 0.1       % sec
     end
     properties (Access = private, Transient)
@@ -127,13 +138,26 @@ classdef ProgressBar < handle
 
     methods
         % -------------------------- Constructor --------------------------
-        function obj = ProgressBar(N, task_name, ui)
-            arguments
-                N         (1,1) double {mustBePositive,mustBeFinite, ...
-                                mustBeReal,mustBeInteger}
-                task_name (1,:) char {mustBeText} = ''
-                ui        (1,3) char {mustBeMember(ui,{'gui','cli'})} = 'gui'
-            end
+        function obj = ProgressBar(N, varargin)
+
+
+            
+
+            p = inputParser;
+            addRequired(p, 'N', ...
+                @(x) validateattributes(x,{'double'},{'scalar', ...
+                'positive' 'finite', 'real', 'integer', 'nonnan'}));
+            addParameter(p, 'taskname', '', @mustBeTextScalar);
+            check_ui = @(x) any(validatestring(x, {'gui', 'cli'}));
+            addParameter(p, 'ui', 'gui', check_ui);
+            addParameter(p, 'no_log', false, @islogical);
+            parse(p, N, varargin{:});
+            
+            % Extract parsed input values
+            N = p.Results.N;
+            task_name = p.Results.taskname;
+            ui = p.Results.ui;
+            obj.no_log = p.Results.no_log;
 
             obj.N = N;
             obj.no_parallel_toolbox = ~contains([ver().Name], ...
@@ -240,10 +264,12 @@ classdef ProgressBar < handle
                     end
                     if obj.counter == obj.N
                         obj.end_time = datetime();
-                        if ~isempty(obj.task_name)
-                            fprintf('%s\n', obj.task_name)
+                        if ~obj.no_log
+                            if ~isempty(obj.task_name)
+                                fprintf('%s\n', obj.task_name)
+                            end
+                            fprintf('%s\n', obj.time_info)
                         end
-                        fprintf('%s\n', obj.time_info)
                         obj.delete
                     end
             end
@@ -298,6 +324,11 @@ bar_string = [repmat(obj.char_set{2},[1,obj.bar_n]), ...
     repmat(obj.char_set{3},[1,obj.bar_N-obj.bar_n])];
 if obj.int_percent == 100
     % finished
+    if obj.no_log
+        end_flag = true;
+        update_cli("", end_flag);
+        return
+    end
     end_flag = true;
     time_info_char = [' ', ...
         convertStringsToChars(...

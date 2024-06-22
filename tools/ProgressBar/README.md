@@ -17,21 +17,21 @@ Handy progress bar that can be used in GUI or text interface.
 
 ### Simple usage
 
-<img width="500" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/76f292bb-3bec-430f-be27-f10f2ac29c7c">  
+<img width="500" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/d959e4ca-aa61-411d-9b69-48ea8b5c054b">  
 <br> <br>
 <img width="400" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/b1e0e70c-40df-44e6-8c2f-963eca586dd7">  
 
 
 ### Task name, Parfor
 
-<img width="500" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/b39d2d97-cefb-46da-9a5c-e790bf676bbc">  
+<img width="500" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/842a74fc-ac31-4f09-9772-c5f5aac65dbe">  
 <br> <br>
 <img width="400" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/a1293838-36b5-4375-a69a-42e4bfe94018">  
 
 
 ### Text based progress bar
 
-<img width="500" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/2217b426-1907-411b-8b11-af512c20b25b">  
+<img width="500" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/062b81d1-b640-45d7-b6e2-6521a3259dca">  
 <br> <br>
 <img width="600" src="https://github.com/elgar328/matlab-code-examples/assets/93251045/08df69d2-f074-47da-b4cb-7eca3f37a7de">  
 
@@ -41,14 +41,14 @@ Handy progress bar that can be used in GUI or text interface.
 ```matlab
 N = 500000;
 
-f = waitbar(0,'waitbar');             % waitbar (MATLAB builtin)
-for n = 1:N, waitbar(n/N,f); end
-close(f)
+WB = waitbar(0,'waitbar');            % waitbar (MATLAB builtin)
+for n = 1:N, waitbar(n/N,WB); end
+close(WB)
 
 PB = ProgressBar(N);                  % ProgressBar gui
 for n = 1:N, PB.count; end
 
-PB = ProgressBar(N,[],'cli');         % ProgressBar cli
+PB = ProgressBar(N, ui='cli');        % ProgressBar cli
 for n = 1:N, PB.count; end
 ```
 

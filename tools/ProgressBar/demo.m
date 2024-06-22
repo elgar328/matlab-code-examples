@@ -1,32 +1,30 @@
 %% gui progress bar
 
 N = 100;
-
 PB = ProgressBar(N);
-for n = 1:N
-    pause(0.5)      % Loop body
 
-    PB.count        % or count(PB)
-end
-
-%% gui progress bar, task name
-
-N = 100;
-task_name = 'For loop';
-
-PB = ProgressBar(N,task_name);
 for n = 1:N
     pause(0.2)      % Loop body
 
-    PB.count        % or count(PB)
+    PB.count
+end
+
+%% gui progress bar, task name, no log
+
+N = 100;
+PB = ProgressBar(N, taskname='For loop', no_log=true);
+
+for n = 1:N
+    pause(0.2)      % Loop body
+
+    PB.count
 end
 
 %% gui progress bar, parfor
 
 N = 600;
-task_name = 'Parfor loop';
+PB = ProgressBar(N, taskname='Parfor loop');
 
-PB = ProgressBar(N,task_name);
 parfor n = 1:N
     pause(0.5*rand)  % Loop body
 
@@ -37,22 +35,21 @@ end
 %% cli progress bar
 
 N = 100;
-task_name = 'For loop';
+PB = ProgressBar(N,taskname='For loop', ui='cli');
 
-PB = ProgressBar(N,task_name,'cli');
 for n = 1:N
-    pause(0.5)      % Loop body
+    pause(0.2)      % Loop body
 
     PB.count        % or count(PB)
 end
 
-%% cli progress bar, without name
+%% cli progress bar, no log
 
 N = 100;
+PB = ProgressBar(N, ui='cli', no_log=true);
 
-PB = ProgressBar(N,[],'cli');
 for n = 1:N
-    pause(0.5)      % Loop body
+    pause(0.2)      % Loop body
 
     PB.count        % or count(PB)
 end
@@ -60,9 +57,8 @@ end
 %% cli progress bar, parfor
 
 N = 600;
-task_name = 'Parfor loop';
+PB = ProgressBar(N, taskname='Parfor loop', ui='cli');
 
-PB = ProgressBar(N,task_name,'cli');
 parfor n = 1:N
     pause(0.5*rand)  % Loop body
 
@@ -73,25 +69,26 @@ end
 %% ProgressBar vs. waitbar (MATLAB builtin)
 
 clear; clc; close all;
-N = 500000;
+N = 100000;
 
 % -------------- waitbar (MATLAB builtin)
 fprintf('waitbar (MATLAB builtin)\n')
 tic
-f = waitbar(0,'waitbar');
-for n = 1:N, waitbar(n/N,f); end
-close(f)
+WB = waitbar(0,'waitbar');
+for n = 1:N, waitbar(n/N,WB); end
+close(WB)
 toc
 
 % -------------- ProgressBar gui
+fprintf('\n')
 tic
-PB = ProgressBar(N,'ProgressBar gui');
+PB = ProgressBar(N, taskname='ProgressBar gui');
 for n = 1:N, PB.count; end
 toc
 
 % -------------- ProgressBar cli
+fprintf('\n')
 tic
-PB = ProgressBar(N,'ProgressBar cli','cli');
+PB = ProgressBar(N, taskname='ProgressBar cli', ui='cli');
 for n = 1:N, PB.count; end
 toc
-
