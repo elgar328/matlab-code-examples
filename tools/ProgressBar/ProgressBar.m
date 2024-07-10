@@ -152,6 +152,9 @@ classdef ProgressBar < handle
             % Extract parsed input values
             N = p.Results.N;
             task_name = p.Results.taskname;
+            if isstring(task_name)
+                task_name = char(task_name);
+            end
             ui = p.Results.ui;
             obj.no_log = p.Results.no_log;
 
